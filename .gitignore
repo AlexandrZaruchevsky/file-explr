@@ -1,6 +1,9 @@
 HELP.md
 target/
 vue-front/node_modules/
+.mvn/
+mvnw
+mvnw.cmd
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
