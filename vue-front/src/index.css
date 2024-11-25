@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    height: 100vh;
+    #app{
+        height: 100vh;
+        @apply flex flex-col;
+    }
+}
+
+.btn-icon{
+    @apply p-1.5 bg-stone-200 rounded;
+    &:hover{
+      @apply shadow bg-stone-300;
+    }
+    &:active{
+      @apply shadow-inner shadow-stone-400;
+    }
+  }
