@@ -77,8 +77,10 @@ public class FileUtil {
 	
 	public CompletableFuture<FolderInfoDtoV1> getFolderInfoV1(Path path){
 		return CompletableFuture.supplyAsync(()->{
-			if (!Files.exists(path))
+			if (!Files.exists(path)) {
+				System.out.println(path.toString());
 				throw new ZAsyncException(HttpStatus.NOT_FOUND, String.format("NOT EXISTS - %s ", path.toString().replace(params.getHomeFolder(), "")));
+			}
 			if (!Files.isDirectory(path)) 
 				throw new ZAsyncException(HttpStatus.BAD_REQUEST, String.format("NOT FOLDER = %s", path.toString().replace(params.getHomeFolder(), "")));
 			try {

@@ -20,4 +20,12 @@ public enum StringPath {
 				.orElse("");
 	}
 	
+	public static String getFullPath(String homeFolder, String path) {
+		return pathNormalize(homeFolder).concat(requestPathNormalize(path));
+	}
+	
+	public static String getFullPathAsResource(String homeFolder, String path) {
+		return "file:".concat(getFullPath(homeFolder, path));
+	}
+	
 }

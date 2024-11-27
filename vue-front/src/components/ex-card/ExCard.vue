@@ -1,5 +1,8 @@
 <template>
   <div class="ex-card">
+    <div class="w-full">
+      <slot name="video" />
+    </div>
     <div class="ex-card-tool-bar">
       <slot name="tool-bar" />
     </div>
@@ -15,7 +18,6 @@
 
 <script setup lang="ts">
 import type { FileInfo } from '@/model/FileModel';
-
 
 const emit = defineEmits(['changeFolderHome', 'changeParentFolder', 'isFind'])
 

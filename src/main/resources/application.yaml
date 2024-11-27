@@ -1,5 +1,6 @@
 server:
   port: ${EXPLR_SERVER_PORT:8081}
+  shutdown: graceful
 
 spring:
   main:

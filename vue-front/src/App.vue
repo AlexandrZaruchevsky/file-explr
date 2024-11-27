@@ -1,5 +1,35 @@
 <template>
-  <div id="explr-app">
+  <div id="explr-app" v-if="isVideo">
+    <ex-card class="h-full" :files="files">
+      <template v-slot:video>
+        <video ref="mVideo" controls class="w-full">
+          <source :src="sourceVideo" />
+        </video>
+      </template>
+      <template v-slot:tool-bar>
+        <ex-card-tool-bar :folder-current="folderCurrent" class="flex gap-1" @change-folder-home="getFolderInfo"
+          @change-folder-parent="getFolderInfo(folderParent)" @is-find="find" />
+      </template>
+      <template v-slot:row="slotProps">
+        <ex-card-video-row :file="slotProps.file" @change-folder="getFolderInfo" @video-play="changeVideo" />
+      </template>
+    </ex-card>
+    <!-- <div class="w-full sm:w-5/6 md:w-4/6 lg:w-3/6 xl:w-2/6 h-full bg-stone-50 flex flex-col overflow-auto">
+      <video ref="mVideo" controls class="w-full">
+        <source :src="sourceVideo" />
+      </video>
+      <div class="h-full flex flex-col overflow-auto">
+        <div 
+          class="flex cursor-pointer hover:bg-stone-100"
+          v-for="file in videoFiles"
+          @click="changeVideo(file.fullname)"
+        >
+          {{ file.fullname }}
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div id="explr-app" v-else>
     <ex-card class="h-full" :files="files">
       <template v-slot:tool-bar>
         <ex-card-tool-bar :folder-current="folderCurrent" class="flex gap-1" @change-folder-home="getFolderInfo"
@@ -31,6 +61,7 @@ import ExCardToolBar from '@/components/ex-card/ExCardToolBar.vue';
 import ExCardRow from '@/components/ex-card/ExCardRow.vue';
 import ExCardFindToolBar from '@/components/ex-card/ExCardFindToolBar.vue';
 import ExCardFindRow from '@/components/ex-card/ExCardFindRow.vue';
+import ExCardVideoRow from './components/ex-card/ExCardVideoRow.vue';
 
 const restApi = import.meta.env.VITE_REST_API
 
@@ -43,6 +74,26 @@ const files = computed((): Array<FileInfo> => folderInfo.value.files)
 
 const fileInfoFilter = ref<Array<FileInfo>>([])
 const isFilter = ref<boolean>(false)
+
+
+const isVideo = ref<boolean>(true)
+const pathVideo = ref("")
+const mVideo = ref<HTMLVideoElement | undefined>(undefined)
+const videoFiles = computed((): Array<FileInfo> => folderInfo.value.files.filter(f => f.fileType!=='FOLDER'))
+const videoEnded = computed(() => mVideo.value?.ended)
+const videoStarted = computed(() => mVideo.value?.played)
+const changeVideo = (v:string = "") => {
+  if (mVideo){
+    pathVideo.value = v
+    mVideo.value?.load()
+    mVideo.value?.play()
+  }
+}
+
+const sourceVideo = computed(()=> 
+  pathVideo.value !== "" 
+    ? `${restApi}stream/video?path=${pathVideo.value}` 
+    : '')
 
 const find = (isFind: boolean = false) => {
   isFilter.value = isFind
@@ -101,6 +152,9 @@ const deleteItem = async (file: string | FileInfo = ''): Promise<void> => {
 
 onMounted(async () => {
   await getFolderInfo();
+  // mVideo.value?.addEventListener("ended", () => {
+  //   console.log(mVideo.value?.currentSrc);
+  // })
 })
 
 </script>
